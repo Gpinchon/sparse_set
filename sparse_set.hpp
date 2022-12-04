@@ -28,6 +28,9 @@ public:
     constexpr inline bool empty() const noexcept;
     /** @return true if the number of elements in the set equals max_size() */
     constexpr inline bool full() const noexcept;
+    /** @brief empties the set */
+    constexpr inline void clear()
+        noexcept(std::is_nothrow_invocable_v<decltype(erase), size_type>);
 
     /** @return the element contained at this index */
     constexpr inline value_type& at(size_type a_Index);
@@ -95,6 +98,15 @@ inline constexpr bool sparse_set<Type, Size>::full() const noexcept {
 }
 
 template<typename Type, uint32_t Size>
+inline constexpr void SparseSet<Type, Size>::clear()
+    noexcept(std::is_nothrow_invocable_v<decltype(erase), size_type>)
+{
+    for (size_type index = 0; !empty(); ++index) {
+        erase(index);
+    }
+}
+
+template<typename Type, uint32_t Size>
 inline constexpr auto sparse_set<Type, Size>::at(size_type a_Index) -> value_type& {
     return _dense.at(_sparse.at(a_Index));
 }
@@ -107,7 +119,8 @@ inline constexpr auto sparse_set<Type, Size>::at(size_type a_Index) const -> con
 template<typename Type, uint32_t Size>
 template<typename ...Args>
 inline constexpr auto sparse_set<Type, Size>::insert(size_type a_Index, Args && ...a_Args)
-    noexcept(std::is_nothrow_constructible_v<value_type, Args...> && std::is_nothrow_destructible_v<value_type>) -> value_type& {
+    noexcept(std::is_nothrow_constructible_v<value_type, Args...> && std::is_nothrow_destructible_v<value_type>) -> value_type&
+{
     if (contains(a_Index)) //just replace the element
     {
         auto& dense = _dense.at(_sparse.at(a_Index));
@@ -125,7 +138,9 @@ inline constexpr auto sparse_set<Type, Size>::insert(size_type a_Index, Args && 
 }
 
 template<typename Type, uint32_t Size>
-inline constexpr void sparse_set<Type, Size>::erase(size_type a_Index) noexcept(std::is_nothrow_destructible_v<value_type>) {
+inline constexpr void sparse_set<Type, Size>::erase(size_type a_Index)
+    noexcept(std::is_nothrow_destructible_v<value_type>)
+{
     if (empty() || !contains(a_Index)) return;
     auto& currDense = _dense.at(_sparse.at(a_Index));
     auto& lastDense = _dense.at(_size - 1);
