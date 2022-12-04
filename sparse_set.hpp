@@ -96,12 +96,12 @@ inline constexpr bool sparse_set<Type, Size>::full() const noexcept {
 
 template<typename Type, uint32_t Size>
 inline constexpr auto sparse_set<Type, Size>::at(size_type a_Index) -> value_type& {
-    return _dense[_sparse.at(a_Index)];
+    return _dense.at(_sparse.at(a_Index));
 }
 
 template<typename Type, uint32_t Size>
 inline constexpr auto sparse_set<Type, Size>::at(size_type a_Index) const -> const value_type& {
-    return _dense[_sparse.at(a_Index)];
+    return _dense.at(_sparse.at(a_Index));
 }
 
 template<typename Type, uint32_t Size>
@@ -116,25 +116,25 @@ inline constexpr auto sparse_set<Type, Size>::insert(size_type a_Index, Args && 
         return (value_type&)dense;
     }
     //Push new element back
-    auto& dense = _dense[_size];
+    auto& dense = _dense.at(_size);
     new(&dense.data) value_type(std::forward<Args>(a_Args)...);
     dense.sparseIndex = a_Index;
     _size++;
     _sparse.at(a_Index) = _size - 1;
-    return (value_type&)_dense[_size - 1];
+    return (value_type&)_dense.at(_size - 1);
 }
 
 template<typename Type, uint32_t Size>
 inline constexpr void sparse_set<Type, Size>::erase(size_type a_Index) noexcept(std::is_nothrow_destructible_v<value_type>) {
     if (!contains(a_Index)) return;
-    const auto last = _dense[_size - 1].sparseIndex;
-    auto& currData = _dense[_sparse[a_Index]].data;
-    auto& lastData = _dense[_size - 1].data;
+    const auto last = _dense.at(_size - 1).sparseIndex;
+    auto& currData = _dense.at(_sparse.at(a_Index)).data;
+    auto& lastData = _dense.at(_size - 1).data;
     std::destroy_at((value_type*)currData); //call current data's destructor
     std::memmove(currData, lastData, sizeof(value_type)); //crush current data with last data
-    std::swap(_dense[_size - 1].sparseIndex, _dense[_sparse[a_Index]].sparseIndex);
-    std::swap(_sparse[last], _sparse[a_Index]);
-    _sparse[a_Index] = max_size();
+    std::swap(_dense.at(_size - 1).sparseIndex, _dense.at(_sparse.at(a_Index)).sparseIndex);
+    std::swap(_sparse.at(last), _sparse.at(a_Index));
+    _sparse.at(a_Index) = max_size();
     _size--;
 }
 
