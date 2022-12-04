@@ -121,19 +121,19 @@ inline constexpr auto sparse_set<Type, Size>::insert(size_type a_Index, Args && 
     dense.sparseIndex = a_Index;
     _size++;
     _sparse.at(a_Index) = _size - 1;
-    return (value_type&)_dense.at(_size - 1);
+    return (value_type&)dense;
 }
 
 template<typename Type, uint32_t Size>
 inline constexpr void sparse_set<Type, Size>::erase(size_type a_Index) noexcept(std::is_nothrow_destructible_v<value_type>) {
-    if (!contains(a_Index)) return;
-    const auto last = _dense.at(_size - 1).sparseIndex;
-    auto& currData = _dense.at(_sparse.at(a_Index)).data;
-    auto& lastData = _dense.at(_size - 1).data;
-    std::destroy_at((value_type*)currData); //call current data's destructor
-    std::memmove(currData, lastData, sizeof(value_type)); //crush current data with last data
-    std::swap(_dense.at(_size - 1).sparseIndex, _dense.at(_sparse.at(a_Index)).sparseIndex);
-    std::swap(_sparse.at(last), _sparse.at(a_Index));
+    if (empty() || !contains(a_Index)) return;
+    auto& currDense = _dense.at(_sparse.at(a_Index));
+    auto& lastDense = _dense.at(_size - 1);
+    size_type lastIndex = lastDense.sparseIndex;
+    std::destroy_at((value_type*)currDense.data); //call current data's destructor
+    std::memmove(currDense.data, lastDense.data, sizeof(value_type)); //crush current data with last data
+    std::swap(lastDense.sparseIndex, currDense.sparseIndex);
+    std::swap(_sparse.at(lastIndex), _sparse.at(a_Index));
     _sparse.at(a_Index) = max_size();
     _size--;
 }
