@@ -19,7 +19,8 @@ public:
     using size_type = decltype(Size);
 
     constexpr inline sparse_set() noexcept;
-    inline ~sparse_set() noexcept(std::is_nothrow_invocable_v<decltype(&sparse_set::clear), sparse_set>);
+    inline ~sparse_set()
+        noexcept(std::is_nothrow_invocable_v<decltype(&sparse_set::clear), sparse_set>);
 
     /** @return The maximum number of elements that can be inserted in the set*/
     constexpr inline size_type max_size() const noexcept;
