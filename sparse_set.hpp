@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Includes
 ////////////////////////////////////////////////////////////////////////////////
+#include <cstring>
 #include <cstdint>
 #include <array>
 #include <memory>
@@ -98,7 +99,7 @@ inline constexpr bool sparse_set<Type, Size>::full() const noexcept {
 }
 
 template<typename Type, uint32_t Size>
-inline constexpr void SparseSet<Type, Size>::clear()
+inline constexpr void sparse_set<Type, Size>::clear()
     noexcept(std::is_nothrow_invocable_v<decltype(erase), size_type>)
 {
     for (size_type index = 0; !empty(); ++index) {
