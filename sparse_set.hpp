@@ -138,7 +138,6 @@ inline constexpr void sparse_set<Type, Size>::erase(size_type a_Index) noexcept(
     _size--;
 }
 
-/**@return true if a value is attached to this index */
 template<typename Type, uint32_t Size>
 inline constexpr bool sparse_set<Type, Size>::contains(size_type a_Index) const {
     return _sparse.at(a_Index) != max_size();
