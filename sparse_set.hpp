@@ -17,8 +17,8 @@ public:
     using value_type = Type;
     using size_type = decltype(Size);
 
-    constexpr inline sparse_set();
-    inline ~sparse_set();
+    constexpr inline sparse_set() noexcept;
+    inline ~sparse_set() noexcept(std::is_nothrow_invocable_v<decltype(clear)>);
 
     /** @return The maximum number of elements that can be inserted in the set*/
     constexpr inline size_type max_size() const noexcept;
@@ -66,12 +66,14 @@ private:
 };
 
 template<typename Type, uint32_t Size>
-inline constexpr sparse_set<Type, Size>::sparse_set() {
+inline constexpr sparse_set<Type, Size>::sparse_set() noexcept {
     _sparse.fill(max_size());
 }
 
 template<typename Type, uint32_t Size>
-inline sparse_set<Type, Size>::~sparse_set() {
+inline sparse_set<Type, Size>::~sparse_set()
+     noexcept(std::is_nothrow_invocable_v<decltype(clear)>);
+{
     clear();
 }
 
