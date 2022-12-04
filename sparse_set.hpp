@@ -51,15 +51,15 @@ public:
 private:
 #pragma warning(push)
 #pragma warning(disable : 26495) //variables are left unitinitlized on purpose
-    struct Storage {
-        size_type						sparseIndex;
-        alignas(value_type) std::byte	data[sizeof(value_type)];
+    struct storage {
+        size_type                       sparseIndex;
+        alignas(value_type) std::byte   data[sizeof(value_type)];
         operator value_type& () { return *(value_type*)data; }
     };
 #pragma warning(pop)
     size_type _size{ 0 };
     std::array<size_type, Size> _sparse;
-    std::array<Storage, Size>   _dense;
+    std::array<storage, Size>   _dense;
 };
 
 template<typename Type, uint32_t Size>
@@ -138,6 +138,7 @@ inline constexpr void sparse_set<Type, Size>::erase(size_type a_Index) noexcept(
     _size--;
 }
 
+/**@return true if a value is attached to this index */
 template<typename Type, uint32_t Size>
 inline constexpr bool sparse_set<Type, Size>::contains(size_type a_Index) const {
     return _sparse.at(a_Index) != max_size();
