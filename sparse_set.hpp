@@ -72,9 +72,7 @@ inline constexpr sparse_set<Type, Size>::sparse_set() {
 
 template<typename Type, uint32_t Size>
 inline sparse_set<Type, Size>::~sparse_set() {
-    for (size_type index = 0; !empty(); ++index) {
-        if (contains(index)) erase(index);
-    }
+    clear();
 }
 
 template<typename Type, uint32_t Size>
