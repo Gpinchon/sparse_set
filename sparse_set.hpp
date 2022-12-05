@@ -151,8 +151,7 @@ constexpr auto sparse_set<Type, Size>::insert(size_type a_Index, Args && ...a_Ar
     {
         auto& dense = _dense[_sparse[a_Index]];
         std::destroy_at((value_type*)dense.data);
-        new(&dense.data) value_type(std::forward<Args>(a_Args)...);
-        return static_cast<value_type&>(dense);
+        return *new(dense.data) value_type(std::forward<Args>(a_Args)...);
     }
     //push new element back
     _sparse[a_Index] = _size;
