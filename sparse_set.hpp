@@ -123,6 +123,7 @@ constexpr void sparse_set<Type, Size>::clear()
 
 template<typename Type, uint32_t Size>
 constexpr auto sparse_set<Type, Size>::at(size_type a_Index) -> value_type& {
+    //if a_Index out of bound or element empty, we should crash
     return _dense.at(_sparse.at(a_Index));
 }
 
