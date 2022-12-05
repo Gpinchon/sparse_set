@@ -13,7 +13,7 @@
 // Class declarations
 ////////////////////////////////////////////////////////////////////////////////
 /**
-* @brief sizeof(sparse_set) is at least sizeof(Type * Size). Large sets should
+* @brief sizeof(sparse_set) is at least sizeof(Type) * Size. Large sets should
 * therefore be allocated on the heap.
 * Every time an element is erased invalidates every object reference to elements
 * in this set.
@@ -40,7 +40,7 @@ public:
     [[nodiscard]] constexpr bool full() const noexcept;
     /** @brief empties the set */
     constexpr void clear()
-        noexcept(std::is_nothrow_invocable_v<decltype(&sparse_set::erase), sparse_set, size_type > );
+        noexcept(std::is_nothrow_invocable_v<decltype(&sparse_set::erase), sparse_set, size_type>);
 
     /** @return a ref to the element contained at this index */
     [[nodiscard]] constexpr value_type& at(size_type a_Index);
