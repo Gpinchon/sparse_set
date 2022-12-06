@@ -1,0 +1,1 @@
+I got inspired by [this blog post](https://skypjack.github.io/2019-09-25-ecs-baf-part-5/) and implemented a fixed-size sparse set, removing the need for vectors, because everything is allocated on the sparse set creation, you should allocate on the heap when using a large set.
